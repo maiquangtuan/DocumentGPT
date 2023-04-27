@@ -1,66 +1,22 @@
 
-# pdfGPT
-### Problem Description : 
-1. When you pass a large text to Open AI, it suffers from a 4K token limit. It cannot take an entire pdf file as an input
-2. Open AI sometimes becomes overtly chatty and returns irrelevant response not directly related to your query. This is because Open AI uses poor embeddings.
-3. ChatGPT cannot directly talk to external data. Some solutions use Langchain but it is token hungry if not implemented correctly.
-4. There are a number of solutions like https://www.chatpdf.com, https://www.bespacific.com/chat-with-any-pdf, https://www.filechat.io they have poor content quality and are prone to hallucination problem. One good way to avoid hallucinations and improve truthfulness is to use improved embeddings. One good solution is to use improved embeddings with Universal Sentence Encoder family of algorithms (Read more here: https://tfhub.dev/google/collections/universal-sentence-encoder/1). 
+# DocumentGPT
+### Why I create this Repo : 
+I found many new products while chatting with colleagues, most of which are related to interacting with PDF files. During my search, I came across an online demo for PDF chatting at https://github.com/bhaskatripathi/pdfGPT. However, I believe I could create a better model using simple open-source modules like BM25 and SentenceTransformer.
 
-### Solution: What is PDF GPT ?
-1. PDF GPT allows you to chat with an uploaded PDF file using GPT functionalities.
-2. The application intelligently breaks the document into smaller chunks and employs a powerful Deep Averaging Network Encoder to generate embeddings.
-3. A semantic search is first performed on your pdf content and the most relevant embeddings are passed to the Open AI.
-4. A custom logic generates precise responses. The returned response can even cite the page number in square brackets([]) where the information is located, adding credibility to the responses and helping to locate pertinent information quickly. The Responses are much better than the naive responses by Open AI.
-5. Andrej Karpathy mentioned in this post that KNN algorithm is most appropriate for similar problems: https://twitter.com/karpathy/status/1647025230546886658
+The idea is similar to that of pdfGPT. We would first extract the text from the uploaded file and split it into chunks, which would be embedded into vectors. When a query is submitted, we would encode it into a vector and find the most relevant chunks based on a similarity search.
 
-### Demo
-Demo URL: https://bit.ly/41ZXBJM
+My implementation is based on the following references:
+https://aidetic.in/blog/2020/07/18/lightning-fast-semantic-search-engine-using-bm25-and-neural-re-ranking/
+https://www.sbert.net/docs/pretrained_models.html#semantic-search
+https://github.com/dorianbrown/rank_bm25
 
-**NOTE**: Please star this project if you like it!
-### UML
-```mermaid
-sequenceDiagram
-    participant User
-    participant System
+For a more production-ready and standardized implementation of chatting with documents, please refer to https://github.com/MindPal-Space/docubot.
 
-    User->>System: Enter API Key
-    User->>System: Upload PDF/PDF URL
-    User->>System: Ask Question
-    User->>System: Submit Call to Action
 
-    System->>System: Blank field Validations
-    System->>System: Convert PDF to Text
-    System->>System: Decompose Text to Chunks (150 word length)
-    System->>System: Check if embeddings file exists
-    System->>System: If file exists, load embeddings and set the fitted attribute to True
-    System->>System: If file doesn't exist, generate embeddings, fit the recommender, save embeddings to file and set fitted attribute to True
-    System->>System: Perform Semantic Search and return Top 5 Chunks with KNN
-    System->>System: Load Open AI prompt
-    System->>System: Embed Top 5 Chunks in Open AI Prompt
-    System->>System: Generate Answer with Davinci
 
-    System-->>User: Return Answer
-```
 
-### Flowchart
-```mermaid
-flowchart TB
-A[Input] --> B[URL]
-A -- Upload File manually --> C[Parse PDF]
-B --> D[Parse PDF] -- Preprocess --> E[Dynamic Text Chunks]
-C -- Preprocess --> E[Dynamic Text Chunks with citation history]
-E --Fit-->F[Generate text embedding with Deep Averaging Network Encoder on each chunk]
-F -- Query --> G[Get Top Results]
-G -- K-Nearest Neighbour --> K[Get Nearest Neighbour - matching citation references]
-K -- Generate Prompt --> H[Generate Answer]
-H -- Output --> I[Output]
-```
-## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=bhaskatripathi/pdfGPT&type=Date)](https://star-history.com/#bhaskatripathi/pdfGPT&Date)
 
-## Also Try:
-This app creates schematic architecture diagrams, UML, flowcharts, Gnatt charts and many more. You simple need to mention the usecase in natural language and it will create the desired diagram.
-https://github.com/bhaskatripathi/Text2Diagram
+
 
 
